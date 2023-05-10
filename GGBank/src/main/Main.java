@@ -1,14 +1,18 @@
 package main;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-
-import components.Client;
 import components.Account;
+import components.Client;
+import components.Credit;
 import components.CurrentAccount;
+import components.Debit;
+import components.Flow;
 import components.SavingsAccount;
+import components.Transfert;
 
 //1.1.1 Creation of the Main class
 public class Main {
@@ -23,11 +27,13 @@ public class Main {
 		Map<Integer, Account> accountsMap = mappingAccounts(accountCollection);
 		displayMapAccounts(accountsMap);
 		
+		List<Flow> flowCollection = loadFlowsCollection(accountCollection);
 	}
 	
 	/**
 	 * Create and return a collection with instances of the Client class
 	 * @param numberClients Number of instances needed
+	 * @return The new Client collection.
 	 */
 	public static List<Client> loadClientsCollection(int numberClients) {
 		
@@ -52,6 +58,7 @@ public class Main {
 	/**
 	 * Create and return a collection with instances of the CurrentAccount and SavingsAccount classes for each client
 	 * @param clients Collection of clients
+	 * @return The new Account collection.
 	 */
 	public static List<Account> loadAccountsCollection(List<Client> clients) {
 		
@@ -79,6 +86,11 @@ public class Main {
 		arrayToDisplay.stream().forEach(account -> System.out.println(account));
 	}
 	
+	/**
+	 * Create and return a Map with "accountNumber" for the key and the Account instance for the value
+	 * @param listAccount
+	 * @return The new Map.
+	 */
 	public static Map<Integer, Account> mappingAccounts(List<Account> listAccount) {
 		Map<Integer, Account> newMappingAccount = new HashMap<>();
 		
@@ -87,6 +99,10 @@ public class Main {
 		return newMappingAccount;
 	}
 	
+	/**
+	 * Displays all Key-Value of the Map.
+	 * @param mapToDisplay The Map to displays
+	 */
 	public static void displayMapAccounts(Map<Integer, Account> mapToDisplay) {
 		// "entrySet()" returns key-value pairs
 		mapToDisplay.entrySet()
@@ -98,5 +114,41 @@ public class Main {
 		// Iterate on the collection
 					.forEach(account -> System.out.println("Key : " + account.getKey() + ". Value : " + account.getValue()));
 
+	}
+	
+	/**
+	 * Creates and returns a collection containing the instances of Flow
+	 * @param accountCollection Collection of accounts
+	 * @return The new Flow collection
+	 */
+	public static List<Flow> loadFlowsCollection(List<Account> accountCollection) {
+		List<Flow> flowCollection = new ArrayList<>();
+		
+		// Get the date after 2 days.
+		LocalDate afterTwoDays = LocalDate.now().plusDays(2);
+		
+		Debit newDebit = new Debit("essence", 50, 1, true, afterTwoDays);
+		flowCollection.add(newDebit);
+		
+		Transfert newTransfert = new Transfert("present", 50, 1, true, afterTwoDays, 2);
+		flowCollection.add(newTransfert);
+		
+		// Credit for all CurrentAccount instances
+		accountCollection.stream()
+					.filter(account -> account instanceof CurrentAccount)
+					.forEach(account -> {
+						Credit newCredit = new Credit("prime", 100.50, account.getAccountNumber(), true, afterTwoDays);
+						flowCollection.add(newCredit);
+					});
+		
+		// Credit for all SavingsAccount instances
+		accountCollection.stream()
+					.filter(account -> account instanceof SavingsAccount)
+					.forEach(account -> {
+						Credit newCredit = new Credit("prime", 1500, account.getAccountNumber(), true, afterTwoDays);
+						flowCollection.add(newCredit);
+					});
+		
+		return flowCollection;
 	}
 }
