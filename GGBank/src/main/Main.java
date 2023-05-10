@@ -3,9 +3,9 @@ package main;
 import java.util.ArrayList;
 import java.util.List;
 
-import client.Client;
+import components.Client;
 
-//1.1.1 Creation of the main class
+//1.1.1 Creation of the Main class
 public class Main {
 	
 	public static void main(String[] args) {

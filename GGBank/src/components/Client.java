@@ -1,6 +1,6 @@
-package client;
+package components;
 
-// 1.1.1 Creation of the client class
+// 1.1.1 Creation of the Client class
 public class Client {
 
 	// Properties
@@ -49,7 +49,7 @@ public class Client {
 	 * Returns all information about the current client.
 	 */
 	public String toString() {
-		return "The client is " + this.name + " " + this.firstName + " and the number of the client is n°" + this.clientNumber; 
+		return this.name + " " + this.firstName + " n°" + this.clientNumber; 
 	}
 	
 }
