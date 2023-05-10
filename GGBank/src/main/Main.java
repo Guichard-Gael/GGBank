@@ -2,6 +2,8 @@ package main;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import components.Client;
 import components.Account;
@@ -17,6 +19,10 @@ public class Main {
 		
 		List<Account> accountCollection = loadAccountsCollection(clientCollection);
 		displayAllClientAccounts(accountCollection);
+		
+		Map<Integer, Account> accountsMap = mappingAccounts(accountCollection);
+		displayMapAccounts(accountsMap);
+		
 	}
 	
 	/**
@@ -40,7 +46,7 @@ public class Main {
 	 * @param arrayToDisplay The collection to display
 	 */
 	public static void displayAllClients(List<Client> arrayToDisplay) {
-		arrayToDisplay.forEach(client -> System.out.println(client));
+		arrayToDisplay.stream().forEach(client -> System.out.println(client));;
 	}
 	
 	/**
@@ -50,6 +56,8 @@ public class Main {
 	public static List<Account> loadAccountsCollection(List<Client> clients) {
 		
 		List<Account> newAccountCollection = new ArrayList<>();
+		
+		
 		
 		clients.forEach( client -> {
 			SavingsAccount newSavingsAccount = new SavingsAccount("general", client);
@@ -68,6 +76,27 @@ public class Main {
 	 * @param arrayToDisplay The collection to display
 	 */
 	public static void displayAllClientAccounts(List<Account> arrayToDisplay) {
-		arrayToDisplay.forEach(account -> System.out.println(account));
+		arrayToDisplay.stream().forEach(account -> System.out.println(account));
+	}
+	
+	public static Map<Integer, Account> mappingAccounts(List<Account> listAccount) {
+		Map<Integer, Account> newMappingAccount = new HashMap<>();
+		
+		listAccount.forEach(account -> newMappingAccount.put(account.getAccountNumber(), account));
+		
+		return newMappingAccount;
+	}
+	
+	public static void displayMapAccounts(Map<Integer, Account> mapToDisplay) {
+		// "entrySet()" returns key-value pairs
+		mapToDisplay.entrySet()
+		// "stream" allows to use Stream methods on the collection
+					.stream()
+		// "sorted" to sort the collection. Conversion of "double" to "Double" for use the "compareTo" method of the Double class.
+					.sorted(
+						(account1, account2) -> ((Double)account1.getValue().getBalance()).compareTo(account2.getValue().getBalance()))
+		// Iterate on the collection
+					.forEach(account -> System.out.println("Key : " + account.getKey() + ". Value : " + account.getValue()));
+
 	}
 }

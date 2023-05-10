@@ -1,7 +1,9 @@
 package components;
 
+import java.util.Comparator;
+
 //1.2.1 Creation of the Account class
-public abstract class Account {
+public abstract class Account implements Comparator<Account> {
 	protected String label;
 	protected double balance;
 	protected int accountNumber;
@@ -49,5 +51,11 @@ public abstract class Account {
 	
 	public String toString() {
 		return "Account n°" + this.accountNumber + ", balance : " + this.balance + ", label : " + this.label + ", client : " + this.client;
+	}
+
+	@Override
+	public int compare(Account account1, Account account2) {
+		
+		return ((Double)account1.balance).compareTo(account2.balance);
 	}
 }
