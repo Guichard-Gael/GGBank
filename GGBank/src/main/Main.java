@@ -46,7 +46,7 @@ public class Main {
 	 * @param arrayToDisplay The collection to display
 	 */
 	public static void displayAllClients(List<Client> arrayToDisplay) {
-		arrayToDisplay.stream().forEach(client -> System.out.println(client));;
+		arrayToDisplay.stream().forEach(client -> System.out.println(client));
 	}
 	
 	/**

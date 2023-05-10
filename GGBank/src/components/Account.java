@@ -4,11 +4,16 @@ import java.util.Comparator;
 
 //1.2.1 Creation of the Account class
 public abstract class Account implements Comparator<Account> {
+	
+	// Properties
+	
 	protected String label;
 	protected double balance;
 	protected int accountNumber;
 	protected Client client;
 	protected static int totalAccount = 0;
+	
+	// Constructor
 	
 	protected Account(String label, Client client) {
 		totalAccount++;
@@ -17,6 +22,8 @@ public abstract class Account implements Comparator<Account> {
 		this.accountNumber = totalAccount;
 	}
 
+	// Getters and Setters
+	
 	public String getLabel() {
 		return label;
 	}
@@ -29,8 +36,12 @@ public abstract class Account implements Comparator<Account> {
 		return balance;
 	}
 
-	public void setBalance(double amount) {
-		this.balance = amount;
+	public void setBalance(Flow flow) {
+		if(flow instanceof Credit) {
+			this.balance += flow.getAmount();
+		}
+		
+		this.balance -= flow.getAmount();
 	}
 
 	public int getAccountNumber() {
