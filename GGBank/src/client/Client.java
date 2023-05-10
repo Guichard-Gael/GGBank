@@ -1,5 +1,6 @@
-// 1.1.1 Creation of the client class
+package client;
 
+// 1.1.1 Creation of the client class
 public class Client {
 
 	// Properties
@@ -7,13 +8,15 @@ public class Client {
 	private String name;
 	private String firstName;
 	private int clientNumber;
+	private static int totalClient = 0;
 	
 	// Constructor
 	
-	Client(String name, String firstName) {
+	public Client(String name, String firstName) {
 		this.name = name;
 		this.firstName = firstName;
-		this.clientNumber++;
+		totalClient++;
+		this.clientNumber = totalClient;
 	}
 
 	// Getters and Setters
