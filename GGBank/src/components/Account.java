@@ -8,7 +8,7 @@ public abstract class Account implements Comparator<Account> {
 	// Properties
 	
 	protected String label;
-	protected double balance;
+	protected double balance = 0;
 	protected int accountNumber;
 	protected Client client;
 	protected static int totalAccount = 0;
@@ -40,8 +40,20 @@ public abstract class Account implements Comparator<Account> {
 		if(flow instanceof Credit) {
 			this.balance += flow.getAmount();
 		}
+		else if(flow instanceof Transfert) {
+			// Conversion to use the method "getIssuerAccountNumber"
+			Transfert transfertFlow = (Transfert)flow;
+			if(this.accountNumber == transfertFlow.getTargetAccountNumber()) {
+				this.balance += transfertFlow.getAmount();
+			}
+			else if(this.accountNumber == transfertFlow.getIssuerAccountNumber()) {
+				this.balance -= transfertFlow.getAmount();				
+			}
+		}
+		else {
+			this.balance -= flow.getAmount();			
+		}
 		
-		this.balance -= flow.getAmount();
 	}
 
 	public int getAccountNumber() {

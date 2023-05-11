@@ -15,4 +15,10 @@ public class Transfert extends Flow{
 		super(comment, amount, targetAccountNumber, effect, dateOfFlow);
 		this.issuerAccountNumber = issuerAccountNumber;
 	}
+	
+	// Getters & Setters
+
+	public int getIssuerAccountNumber() {
+		return issuerAccountNumber;
+	}
 }

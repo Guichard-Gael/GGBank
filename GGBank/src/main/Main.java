@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.HashMap;
 import components.Account;
 import components.Client;
@@ -18,16 +19,20 @@ import components.Transfert;
 public class Main {
 	
 	public static void main(String[] args) {
-		List<Client> clientCollection = loadClientsCollection(3);
-		displayAllClients(clientCollection);
+		Main mainInstance = new Main();
 		
-		List<Account> accountCollection = loadAccountsCollection(clientCollection);
-		displayAllClientAccounts(accountCollection);
+		List<Client> clientCollection = mainInstance.loadClientsCollection(3);
+		mainInstance.displayAllClients(clientCollection);
 		
-		Map<Integer, Account> accountsMap = mappingAccounts(accountCollection);
-		displayMapAccounts(accountsMap);
+		List<Account> accountCollection = mainInstance.loadAccountsCollection(clientCollection);
+		mainInstance.displayAllClientAccounts(accountCollection);
 		
-		List<Flow> flowCollection = loadFlowsCollection(accountCollection);
+		Map<Integer, Account> accountsMap = mainInstance.mappingAccounts(accountCollection);
+		mainInstance.displayMapAccounts(accountsMap);
+		
+		List<Flow> flowCollection = mainInstance.loadFlowsCollection(accountCollection);		
+		
+		mainInstance.applyFlows(flowCollection, accountsMap);
 	}
 	
 	/**
@@ -35,7 +40,7 @@ public class Main {
 	 * @param numberClients Number of instances needed
 	 * @return The new Client collection.
 	 */
-	public static List<Client> loadClientsCollection(int numberClients) {
+	public List<Client> loadClientsCollection(int numberClients) {
 		
 		List<Client> newClientCollection = new ArrayList<>();
 		
@@ -51,8 +56,8 @@ public class Main {
 	 * Display all instances of the collection
 	 * @param arrayToDisplay The collection to display
 	 */
-	public static void displayAllClients(List<Client> arrayToDisplay) {
-		arrayToDisplay.stream().forEach(client -> System.out.println(client));
+	public void displayAllClients(List<Client> arrayToDisplay) {
+		arrayToDisplay.stream().forEach(System.out::println);
 	}
 	
 	/**
@@ -60,7 +65,7 @@ public class Main {
 	 * @param clients Collection of clients
 	 * @return The new Account collection.
 	 */
-	public static List<Account> loadAccountsCollection(List<Client> clients) {
+	public List<Account> loadAccountsCollection(List<Client> clients) {
 		
 		List<Account> newAccountCollection = new ArrayList<>();
 		
@@ -82,8 +87,8 @@ public class Main {
 	 * Display all instances of the collection
 	 * @param arrayToDisplay The collection to display
 	 */
-	public static void displayAllClientAccounts(List<Account> arrayToDisplay) {
-		arrayToDisplay.stream().forEach(account -> System.out.println(account));
+	public void displayAllClientAccounts(List<Account> arrayToDisplay) {
+		arrayToDisplay.stream().forEach(System.out::println);
 	}
 	
 	/**
@@ -91,7 +96,7 @@ public class Main {
 	 * @param listAccount
 	 * @return The new Map.
 	 */
-	public static Map<Integer, Account> mappingAccounts(List<Account> listAccount) {
+	public Map<Integer, Account> mappingAccounts(List<Account> listAccount) {
 		Map<Integer, Account> newMappingAccount = new HashMap<>();
 		
 		listAccount.forEach(account -> newMappingAccount.put(account.getAccountNumber(), account));
@@ -103,7 +108,7 @@ public class Main {
 	 * Displays all Key-Value of the Map.
 	 * @param mapToDisplay The Map to displays
 	 */
-	public static void displayMapAccounts(Map<Integer, Account> mapToDisplay) {
+	public void displayMapAccounts(Map<Integer, Account> mapToDisplay) {
 		// "entrySet()" returns key-value pairs
 		mapToDisplay.entrySet()
 		// "stream" allows to use Stream methods on the collection
@@ -121,7 +126,7 @@ public class Main {
 	 * @param accountCollection Collection of accounts
 	 * @return The new Flow collection
 	 */
-	public static List<Flow> loadFlowsCollection(List<Account> accountCollection) {
+	public List<Flow> loadFlowsCollection(List<Account> accountCollection) {
 		List<Flow> flowCollection = new ArrayList<>();
 		
 		// Get the date after 2 days.
@@ -130,12 +135,9 @@ public class Main {
 		Debit newDebit = new Debit("essence", 50, 1, true, afterTwoDays);
 		flowCollection.add(newDebit);
 		
-		Transfert newTransfert = new Transfert("present", 50, 1, true, afterTwoDays, 2);
-		flowCollection.add(newTransfert);
-		
 		// Credit for all CurrentAccount instances
 		accountCollection.stream()
-					.filter(account -> account instanceof CurrentAccount)
+					.filter(CurrentAccount.class::isInstance)
 					.forEach(account -> {
 						Credit newCredit = new Credit("prime", 100.50, account.getAccountNumber(), true, afterTwoDays);
 						flowCollection.add(newCredit);
@@ -143,12 +145,47 @@ public class Main {
 		
 		// Credit for all SavingsAccount instances
 		accountCollection.stream()
-					.filter(account -> account instanceof SavingsAccount)
+					.filter(SavingsAccount.class::isInstance)
 					.forEach(account -> {
 						Credit newCredit = new Credit("prime", 1500, account.getAccountNumber(), true, afterTwoDays);
 						flowCollection.add(newCredit);
 					});
 		
+		Transfert newTransfert = new Transfert("present", 50, 2, true, afterTwoDays, 1);
+		flowCollection.add(newTransfert);
+		
 		return flowCollection;
+	}
+	
+	/**
+	 * Apply all flows
+	 * @param flowsCollection The collection of flows
+	 * @param accountsMap The Map of accounts
+	 */
+	public void applyFlows(List<Flow> flowsCollection, Map<Integer, Account> accountsMap) {
+
+		// Iterate on the flowsCollection
+		flowsCollection.stream().forEach(flow -> {
+
+			// Check the type of the flow
+			if(flow instanceof Transfert) {
+				Transfert transfertFlow = (Transfert)flow;
+				Account targetAccount = accountsMap.get(transfertFlow.getTargetAccountNumber());
+				Account issuerAccount = accountsMap.get(transfertFlow.getIssuerAccountNumber());
+				targetAccount.setBalance(transfertFlow);
+				issuerAccount.setBalance(transfertFlow);
+			}
+			else {
+				Account flowAccount = accountsMap.get(flow.getTargetAccountNumber());
+				flowAccount.setBalance(flow);
+			}
+		});
+		Predicate<Account> isNegative = account -> account.getBalance() < 0;
+		// Display all account with negative balance.
+		flowsCollection.stream()
+						.filter(flow -> isNegative.test(accountsMap.get(flow.getTargetAccountNumber())))
+						.forEach( flow -> System.out.println(accountsMap.get(flow.getTargetAccountNumber())));
+		
+		this.displayMapAccounts(accountsMap);
 	}
 }
