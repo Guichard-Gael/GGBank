@@ -1,7 +1,12 @@
 package main;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -14,6 +19,8 @@ import components.Debit;
 import components.Flow;
 import components.SavingsAccount;
 import components.Transfert;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 //1.1.1 Creation of the Main class
 public class Main {
@@ -21,18 +28,25 @@ public class Main {
 	public static void main(String[] args) {
 		Main mainInstance = new Main();
 		
-		List<Client> clientCollection = mainInstance.loadClientsCollection(3);
-		mainInstance.displayAllClients(clientCollection);
+		// 1.1 Clients
+		List<Client> clientsCollection = mainInstance.loadClientsCollection(3);
+		mainInstance.displayAllClients(clientsCollection);
 		
-		List<Account> accountCollection = mainInstance.loadAccountsCollection(clientCollection);
-		mainInstance.displayAllClientAccounts(accountCollection);
+		// 1.2 Accounts
+		List<Account> accountsCollection = mainInstance.loadAccountsCollection(clientsCollection);
+		mainInstance.displayAllClientAccounts(accountsCollection);
 		
-		Map<Integer, Account> accountsMap = mainInstance.mappingAccounts(accountCollection);
+		// 1.3 Flows
+		Map<Integer, Account> accountsMap = mainInstance.mappingAccounts(accountsCollection);
 		mainInstance.displayMapAccounts(accountsMap);
 		
-		List<Flow> flowCollection = mainInstance.loadFlowsCollection(accountCollection);		
+		List<Flow> flowsCollection = mainInstance.loadFlowsCollection(accountsCollection);		
 		
-		mainInstance.applyFlows(flowCollection, accountsMap);
+		mainInstance.applyFlows(flowsCollection, accountsMap);
+		
+		// 2.1 JSON file of flows
+		List<Flow> newFlowsCollection = mainInstance.loadJSONflows();
+		mainInstance.applyFlows(newFlowsCollection, accountsMap);
 	}
 	
 	/**
@@ -187,5 +201,49 @@ public class Main {
 						.forEach( flow -> System.out.println(accountsMap.get(flow.getTargetAccountNumber())));
 		
 		this.displayMapAccounts(accountsMap);
+	}
+	
+	/**
+	 * Create instances of Credit, Debit and Transferts classes with json datas
+	 * @return List of Flow
+	 */
+	public List<Flow> loadJSONflows(){
+		
+		List<Flow> flowsCollection = new ArrayList<>();
+		// Get credits.json file
+		Path creditsFilePath = Paths.get(".\\src\\datas\\credits.json");
+		File jsonCredits = creditsFilePath.toFile();
+
+		// Get debits.json file
+		Path debitsFilePath = Paths.get(".\\src\\datas\\debits.json");
+		File jsonDebits = debitsFilePath.toFile();
+		
+		// Get transferts.json file
+		Path transfertsFilePath = Paths.get(".\\src\\datas\\transferts.json");
+		File jsonTransferts = transfertsFilePath.toFile();
+		
+		try {
+			// Get the object mapper
+			ObjectMapper objectMapper = new ObjectMapper();
+			// Add a module to accept "LocalDate" type
+			objectMapper.registerModule(new JavaTimeModule());
+			
+			// Create an instance of Debit class with json data.
+			Debit debitFlow = objectMapper.readValue(jsonDebits, Debit.class);
+			flowsCollection.add(debitFlow);
+			
+			// Create instances of Credit class with json data.
+			Credit[] creditArray = objectMapper.readValue(jsonCredits, Credit[].class);
+			Collections.addAll(flowsCollection, creditArray);
+			
+			// Create an instance of Transfert class with json data.
+			Transfert transfertFlow = objectMapper.readValue(jsonTransferts, Transfert.class);
+			flowsCollection.add(transfertFlow);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return flowsCollection;
 	}
 }

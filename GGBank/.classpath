@@ -5,6 +5,10 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="datas/" kind="src" path="src"/>
+	<classpathentry kind="lib" path="C:/Users/Gael/Downloads/jackson-annotations-2.15.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Gael/Downloads/jackson-core-2.15.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Gael/Downloads/jackson-databind-2.15.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Gael/Downloads/jar_files (3)/jackson-datatype-jsr310-2.14.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

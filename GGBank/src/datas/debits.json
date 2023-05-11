@@ -1,0 +1,7 @@
+{
+	"comment" : "essence",
+	"amount" : 50,
+	"targetAccountNumber" : 1,
+	"effect" : "true",
+	"dateOfFlow" : [2023,5,13]
+}

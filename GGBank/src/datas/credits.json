@@ -1,0 +1,44 @@
+[
+	{
+		"comment" : "prime",
+		"amount" : 100.50,
+		"targetAccountNumber" : 2,
+		"effect" : "true",
+		"dateOfFlow" : [2023,5,13]
+	},
+	{
+		"comment" : "prime",
+		"amount" : 100.50,
+		"targetAccountNumber" : 4,
+		"effect" : "true",
+		"dateOfFlow" : [2023,5,13]
+	},
+	{
+		"comment" : "prime",
+		"amount" : 100.50,
+		"targetAccountNumber" : 6,
+		"effect" : "true",
+		"dateOfFlow" : [2023,5,13]
+	},
+	{
+		"comment" : "prime",
+		"amount" : 1500,
+		"targetAccountNumber" : 1,
+		"effect" : "true",
+		"dateOfFlow" : [2023,5,13]
+	},
+	{
+		"comment" : "prime",
+		"amount" : 1500,
+		"targetAccountNumber" : 3,
+		"effect" : "true",
+		"dateOfFlow" : [2023,5,13]
+	},
+	{
+		"comment" : "prime",
+		"amount" : 1500,
+		"targetAccountNumber" : 5,
+		"effect" : "true",
+		"dateOfFlow" : [2023,5,13]
+	}
+]
