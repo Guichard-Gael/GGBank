@@ -1,12 +1,13 @@
 package components;
 
 import java.util.Comparator;
+import javax.xml.bind.annotation.XmlElement;
 
 //1.2.1 Creation of the Account class
+
 public abstract class Account implements Comparator<Account> {
 	
 	// Properties
-	
 	protected String label;
 	protected double balance = 0;
 	protected int accountNumber;
@@ -15,11 +16,15 @@ public abstract class Account implements Comparator<Account> {
 	
 	// Constructor
 	
-	protected Account(String label, Client client) {
+	protected Account() {
 		totalAccount++;
+		this.accountNumber = totalAccount;
+	}
+
+	protected Account(String label, Client client) {
+		this();
 		this.label = label;
 		this.client = client;
-		this.accountNumber = totalAccount;
 	}
 
 	// Getters and Setters
@@ -28,6 +33,7 @@ public abstract class Account implements Comparator<Account> {
 		return label;
 	}
 
+	@XmlElement(name="label")
 	public void setLabel(String label) {
 		this.label = label;
 	}

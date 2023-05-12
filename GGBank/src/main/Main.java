@@ -1,5 +1,8 @@
 package main;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -47,6 +50,11 @@ public class Main {
 		// 2.1 JSON file of flows
 		List<Flow> newFlowsCollection = mainInstance.loadJSONflows();
 		mainInstance.applyFlows(newFlowsCollection, accountsMap);
+		
+		// 2.2 XML file of account
+		Map<Integer, Account> newAccountsCollection = mainInstance.loadAccountsCollectionWithXML(clientsCollection);
+		mainInstance.displayMapAccounts(newAccountsCollection);
+		
 	}
 	
 	/**
@@ -106,7 +114,7 @@ public class Main {
 	}
 	
 	/**
-	 * Create and return a Map with "accountNumber" for the key and the Account instance for the value
+	 * Create and return a Map with "accountNumber" for the key and the Account instance as value
 	 * @param listAccount
 	 * @return The new Map.
 	 */
@@ -245,5 +253,54 @@ public class Main {
 		}
 		
 		return flowsCollection;
+	}
+	
+	/**
+	 * Create and return a Map, from XML file, with "accountNumber" for the key and the Account instance as value
+	 * @param clients Collection of clients
+	 * @return The new Account collection.
+	 */
+	public Map<Integer, Account> loadAccountsCollectionWithXML(List<Client> clients) {
+		
+		// Creating a temporary list
+		List<Account> newAccountCollection = new ArrayList<>();
+		
+		clients.forEach( client -> {
+			
+			try {
+				// Get savingsAccount.xml file
+				Path savingsAccountXMLPath = Paths.get(".\\src\\datas\\savingsAccount.xml");
+				File savingsAccountXML = savingsAccountXMLPath.toFile();
+				
+				JAXBContext jaxbContexSavingsAccount = JAXBContext.newInstance(SavingsAccount.class);
+				Unmarshaller unmarshallerSavingsAccount = jaxbContexSavingsAccount.createUnmarshaller();
+				// Create instance with XML data
+				SavingsAccount savingsAccount = (SavingsAccount)unmarshallerSavingsAccount.unmarshal(savingsAccountXML);
+				// Set the client to the account
+				savingsAccount.setClient(client);
+				
+				// Get currentAccount.xml file
+				Path currentAccountXMLPath = Paths.get(".\\src\\datas\\currentAccount.xml");
+				File currentAccountXML = currentAccountXMLPath.toFile();
+				
+				JAXBContext jaxbContextCurrentAccount = JAXBContext.newInstance(CurrentAccount.class);
+				Unmarshaller unmarshallerCurrentAccount = jaxbContextCurrentAccount.createUnmarshaller();
+				CurrentAccount currentAccount = (CurrentAccount)unmarshallerCurrentAccount.unmarshal(currentAccountXML);
+				currentAccount.setClient(client);
+				
+				
+				newAccountCollection.add(savingsAccount);
+				newAccountCollection.add(currentAccount);
+				
+			} catch(JAXBException e) {
+				e.printStackTrace();
+			}		
+		});
+
+		// Creating the map to return
+		Map<Integer, Account> newMappingAccount = new HashMap<>();
+		newAccountCollection.forEach(account -> newMappingAccount.put(account.getAccountNumber(), account));
+		
+		return newMappingAccount;
 	}
 }
