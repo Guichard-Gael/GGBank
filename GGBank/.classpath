@@ -6,13 +6,13 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry excluding="datas/" kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/Gael/Desktop/Hn_services/dependencies/jackson-annotations-2.15.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Gael/Desktop/Hn_services/dependencies/jackson-core-2.15.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Gael/Desktop/Hn_services/dependencies/jackson-databind-2.15.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Gael/Desktop/Hn_services/dependencies/jackson-datatype-jsr310-2.14.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Gael/Downloads/jar_files/jaxb-api-2.2.8.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Gael/Downloads/jar_files (1)/jakarta.activation-1.2.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Gael/Downloads/jar_files (1)/jakarta.xml.bind-api-2.3.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Gael/Downloads/jar_files (1)/jaxb-impl-2.3.8.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Gael/Desktop/Hn_services/GGBank/GGBank/dependencies/jackson-annotations-2.15.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Gael/Desktop/Hn_services/GGBank/GGBank/dependencies/jackson-core-2.15.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Gael/Desktop/Hn_services/GGBank/GGBank/dependencies/jackson-databind-2.15.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Gael/Desktop/Hn_services/GGBank/GGBank/dependencies/jackson-datatype-jsr310-2.14.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Gael/Desktop/Hn_services/GGBank/GGBank/dependencies/jakarta.activation-1.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Gael/Desktop/Hn_services/GGBank/GGBank/dependencies/jakarta.xml.bind-api-2.3.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Gael/Desktop/Hn_services/GGBank/GGBank/dependencies/jaxb-api-2.2.8.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Gael/Desktop/Hn_services/GGBank/GGBank/dependencies/jaxb-impl-2.3.8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
